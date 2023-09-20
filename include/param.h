@@ -1,0 +1,9 @@
+global TOO_FAR_GONE = 3;
+global MAX_PATH_ITER = 40;
+global MODE_BARBARIAN = 0;
+global MODE_RETREAT = -1;
+global MODE_AMBUSH = 1;
+global MODE_NEW_ENEMY = 9;
+global __TIMER__ = 0;
+global __DEFAULT_TIMER__ = 6;
+global __LAST_CHANCE__= 55;
