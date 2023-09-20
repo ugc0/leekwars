@@ -159,9 +159,9 @@ function newPath(start, end, avoid,leap) {
 		for(var i=0;i<=leap;i++) {
 			root[i]=arrayUnique(root[i]);
 			pushAll(visited, root[i]);
+			if (i>0) push(new_root,[]);
 		}
 		for(var i=leap;i>=0;i--) {
-			if (i>0) push(new_root,[]);
 			for (var r in root[i]) {
 				for (var n in __Nstrict__[r]) {
 					if (!inArray(visited, n)) {

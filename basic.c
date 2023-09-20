@@ -13,6 +13,8 @@ var T = getTurn();
 
 if (T>=__LAST_CHANCE__) __TIMER__=0;
 
+var max_MP = getMP();
+
 var enemy = arraySort(arrayFilter(getEnemies(),function(x){return isAlive(x)}), function(e1, e2) {
 	if (getType(e1)==ENTITY_LEEK) return -1; else return 1;
 })[0];
@@ -51,7 +53,6 @@ global WP_cost = getWeaponCost(WP);
 
 var pos = getCell();
 var target = getCell(enemy);
-var max_MP = getMP();
 
 push(enemy_positions, target);
 push(my_positions, pos);
@@ -76,9 +77,12 @@ var safe_cells = utility_cells[0];
 var danger_cells = utility_cells[1];
 
 if (enemy_type==ENTITY_CHEST or T>=__LAST_CHANCE__) {
-	safe_cells = []; pushAll(safe_cells, arrayDelta(safe_cells, chest_dangerous_area));
+	safe_cells = my_path;
 	danger_cells = []; pushAll(danger_cells, chest_dangerous_area);
+} else {
+	pushAll(danger_cells, chest_dangerous_area);
 }
+safe_cells = arrayDelta(safe_cells, chest_dangerous_area);
 
 debugC(danger_cells, COLOR_RED);
 debugC(safe_cells, COLOR_GREEN);
@@ -98,13 +102,6 @@ if (T >= 3) {
 	}
 }
 
-var warpath = getPath(pos, target);
-if (__MODE__ == MODE_AMBUSH) warpath = nexus;
-var warpath_length = 0;
-if (warpath!=null) warpath_length = count(warpath);
- 
-mark(warpath, COLOR_BLUE, 1);
-debugC("Warpath : " + warpath, COLOR_BLUE);
 mark(danger_cells, COLOR_RED, 1);
 mark(safe_cells, COLOR_GREEN, 1);
 
@@ -159,8 +156,19 @@ if (isDead(enemy)) {
 }
 
 if (inArray(danger_cells, pos)) {
+	debugC("I AM IN DANGER AND THERE'S AN ACCESSIBLE SAFE CELL", COLOR_PURPLE);
 	if (count(safe_cells) > 0) moveTowardCell(safe_cells[0]);
 }
+
+pos = getCell();
+
+var warpath = getPath(pos, target);
+if (__MODE__ == MODE_AMBUSH) warpath = nexus;
+var warpath_length = 0;
+if (warpath!=null) warpath_length = count(warpath);
+ 
+mark(warpath, COLOR_BLUE, 1);
+debugC("Warpath : " + warpath, COLOR_BLUE);
 
 //RETREATING
 
@@ -264,9 +272,12 @@ if (stuck) {
 	var border = sortNearest(borderZone(danger_cells), target);
 	
 	if (enemy_type==ENTITY_CHEST or T>=__LAST_CHANCE__) {
-		safe_cells = []; pushAll(safe_cells, arrayDelta(safe_cells, chest_dangerous_area));
+		safe_cells = my_path;
 		danger_cells = []; pushAll(danger_cells, chest_dangerous_area);
+	} else {
+		pushAll(danger_cells, chest_dangerous_area);
 	}
+	safe_cells = arrayDelta(safe_cells, chest_dangerous_area);
 	
 	mark(safe_cells, COLOR_GREEN);
 	debugC(safe_cells, COLOR_GREEN);
@@ -302,7 +313,7 @@ if (stuck) {
 	debugC(opti_cells, COLOR_CYAN);
 	var opti_cells_considered = 0;
 	for (var oc in opti_cells) {
-		if (opti_cells_considered>10) break;
+		if (opti_cells_considered>20) break;
 		opti_cells_considered++;
 		if (oc.d==null) continue;
 		var optipath=null;
