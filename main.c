@@ -139,6 +139,8 @@ if (!positionned and count(__CP_NO_LOS__)>0) {
 	}
 }
 
+BUFF();
+
 //HITTING 1
 
 if (getLife()!=my_max_HP) INCENDIO(target);
@@ -366,17 +368,6 @@ if (__MODE__ == MODE_BARBARIAN) {
 	debug("MUSTN'T GO THAT WAY !");
 }
 
-
-
 if (getLife()<my_max_HP) {
 	HEAL();
-}
-
-if (enemy_type!=ENTITY_CHEST) {
-	var my_new_path = getRange(pos, getMP());
-	for (var c in my_new_path) {
-		if (inArray(offensive_zone, c)) {
-			BUFF();
-		}
-	}
 }
